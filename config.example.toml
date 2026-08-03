@@ -1,0 +1,49 @@
+[defaults]
+check_interval = 5
+rise = 3
+fall = 2
+on_exit = "withdraw"
+
+[[service]]
+name = "dns"
+ip = "10.0.0.1"
+type = "dns"
+host = "127.0.0.1"
+port = 53
+timeout = 3
+queries = [
+    { name = "google.com", record_type = "A" },
+    { name = "internal.corp.example.com", record_type = "A" },
+]
+
+[[service]]
+name = "web"
+ip = "10.0.0.2"
+type = "http"
+url = "http://127.0.0.1:8080/healthz"
+expect_status = 200
+timeout = 5
+
+[[service]]
+name = "cache"
+ip = "10.0.0.3"
+type = "tcp"
+host = "127.0.0.1"
+port = 6379
+timeout = 3
+
+[[service]]
+name = "ntp"
+ip = "10.0.0.5"
+type = "ntp"
+host = "127.0.0.1"
+max_stratum = 1
+
+[[service]]
+name = "custom"
+ip = "10.0.0.4"
+type = "exec"
+command = "/usr/local/bin/check_myservice.sh"
+check_interval = 10
+rise = 5
+fall = 3
