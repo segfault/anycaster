@@ -25,8 +25,9 @@ jobs:
             artifact: anycaster-linux-armv7
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@master
         with:
+          toolchain: "" # uses rust-toolchain.toml
           targets: ${{ matrix.target }}
       - uses: Swatinem/rust-cache@v2
         with:
