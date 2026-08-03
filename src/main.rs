@@ -9,7 +9,7 @@ use clap::Parser;
 use tracing::{info, warn};
 
 #[derive(Parser)]
-#[command(name = "anycaster", about = "Anycast health checker and IP advertiser")]
+#[command(name = "anycaster", version, about = "Anycast health checker and IP advertiser")]
 struct Cli {
     /// Path to the configuration file
     #[arg(short, long, default_value = "/etc/anycaster/config.toml")]
