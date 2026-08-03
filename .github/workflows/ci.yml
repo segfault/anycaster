@@ -15,9 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: "" # uses rust-toolchain.toml
+      - run: rustup show && rustup target add $(rustup show active-toolchain | cut -d' ' -f1 | cut -d'-' -f2-)
       - uses: Swatinem/rust-cache@v2
       - run: cargo fmt -- --check
       - run: cargo clippy -- -D warnings
@@ -38,10 +36,7 @@ jobs:
             artifact: anycaster-linux-armv7
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: "" # uses rust-toolchain.toml
-          targets: ${{ matrix.target }}
+      - run: rustup target add ${{ matrix.target }}
       - uses: Swatinem/rust-cache@v2
         with:
           key: ${{ matrix.target }}
