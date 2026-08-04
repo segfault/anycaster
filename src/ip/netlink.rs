@@ -21,8 +21,7 @@ pub async fn is_present(ip: &str) -> anyhow::Result<bool> {
     while let Some(msg) = addrs.try_next().await? {
         if msg.header.prefix_len == PREFIX_LEN {
             for nla in &msg.attributes {
-                if let rtnetlink::packet_route::address::AddressAttribute::Address(a) = nla
-                {
+                if let rtnetlink::packet_route::address::AddressAttribute::Address(a) = nla {
                     if *a == std::net::IpAddr::V4(addr) {
                         return Ok(true);
                     }
