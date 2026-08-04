@@ -1,0 +1,31 @@
+[defaults]
+check_interval = 5
+rise = 3
+fall = 2
+on_exit = "withdraw"
+
+# Add services below. Examples:
+#
+# [[service]]
+# name = "dns"
+# ip = "10.0.0.1"
+# type = "dns"
+# host = "127.0.0.1"
+# port = 53
+# queries = [
+#     { name = "google.com", record_type = "A" },
+# ]
+#
+# [[service]]
+# name = "web"
+# ip = "10.0.0.2"
+# type = "http"
+# url = "http://127.0.0.1:8080/healthz"
+# expect_status = 200
+#
+# [[service]]
+# name = "ntp"
+# ip = "10.0.0.3"
+# type = "ntp"
+# host = "127.0.0.1"
+# max_stratum = 1

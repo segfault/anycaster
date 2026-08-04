@@ -3,6 +3,8 @@ name = "anycaster"
 version = "0.1.0"
 edition = "2024"
 license = "MIT"
+description = "Anycast health checker and IP advertiser"
+repository = "https://github.com/segfault/anycaster"
 
 [dependencies]
 anyhow = "1"
@@ -15,3 +17,20 @@ tokio = { version = "1", features = ["full"] }
 toml = "0.8"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+[package.metadata.deb]
+maintainer = "Mark Guzman"
+section = "net"
+assets = [
+    ["target/release/anycaster", "usr/bin/", "755"],
+    ["pkg/config.default.toml", "etc/anycaster/config.toml", "644"],
+    ["pkg/anycaster.service", "lib/systemd/system/anycaster.service", "644"],
+]
+conf-files = ["/etc/anycaster/config.toml"]
+
+[package.metadata.generate-rpm]
+assets = [
+    { source = "target/release/anycaster", dest = "/usr/bin/anycaster", mode = "755" },
+    { source = "pkg/config.default.toml", dest = "/etc/anycaster/config.toml", mode = "644", config = true },
+    { source = "pkg/anycaster.service", dest = "/lib/systemd/system/anycaster.service", mode = "644" },
+]

@@ -1,0 +1,25 @@
+[Unit]
+Description=Anycaster - Anycast health checker and IP advertiser
+After=network.target bird.service bird2.service
+Wants=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/anycaster --config /etc/anycaster/config.toml
+Restart=on-failure
+RestartSec=5
+LimitNOFILE=65536
+
+# Hardening
+NoNewPrivileges=no
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/etc/anycaster
+PrivateTmp=yes
+
+# Needs CAP_NET_ADMIN for ip addr add/del on lo
+AmbientCapabilities=CAP_NET_ADMIN
+CapabilityBoundingSet=CAP_NET_ADMIN
+
+[Install]
+WantedBy=multi-user.target
