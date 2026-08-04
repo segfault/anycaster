@@ -18,6 +18,10 @@ toml = "0.8"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
+[target.'cfg(target_os = "linux")'.dependencies]
+futures-util = "0.3"
+rtnetlink = "0.18"
+
 [package.metadata.deb]
 maintainer = "Mark Guzman"
 section = "net"
