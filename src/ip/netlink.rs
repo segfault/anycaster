@@ -70,11 +70,13 @@ pub async fn remove(ip: &str) -> anyhow::Result<()> {
 
     let result = handle
         .address()
-        .del(handle
-            .address()
-            .add(LOOPBACK_INDEX, std::net::IpAddr::V4(addr), PREFIX_LEN)
-            .message_mut()
-            .clone())
+        .del(
+            handle
+                .address()
+                .add(LOOPBACK_INDEX, std::net::IpAddr::V4(addr), PREFIX_LEN)
+                .message_mut()
+                .clone(),
+        )
         .execute()
         .await;
 
