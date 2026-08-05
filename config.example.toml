@@ -1,3 +1,9 @@
+# Optional: withdraw all routes when system load exceeds threshold
+# Omit this section to disable load monitoring
+[load]
+threshold = 10.0         # 1-minute load average
+interval = 5             # seconds between checks
+
 [defaults]
 check_interval = 5
 rise = 3

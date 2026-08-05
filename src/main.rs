@@ -1,6 +1,7 @@
 mod checks;
 mod config;
 mod ip;
+mod load;
 mod runner;
 
 use std::path::PathBuf;
@@ -41,11 +42,22 @@ async fn main() -> anyhow::Result<()> {
     let on_exit = cfg.defaults.on_exit;
     let service_ips: Vec<String> = cfg.services.iter().map(|s| s.ip.clone()).collect();
 
+    let overloaded = load::overloaded();
+
+    if let Some(ref load_config) = cfg.load {
+        let flag = overloaded.clone();
+        let lc = load_config.clone();
+        tokio::spawn(async move {
+            load::monitor(&lc, flag).await;
+        });
+    }
+
     let mut handles = Vec::new();
     for service in cfg.services {
         let defaults = cfg.defaults.clone();
+        let flag = overloaded.clone();
         let handle = tokio::spawn(async move {
-            runner::run_service(&service, &defaults).await;
+            runner::run_service(&service, &defaults, flag).await;
         });
         handles.push(handle);
     }

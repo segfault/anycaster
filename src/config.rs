@@ -6,8 +6,18 @@ use serde::Deserialize;
 pub struct Config {
     #[serde(default)]
     pub defaults: Defaults,
+    #[serde(default)]
+    pub load: Option<LoadConfig>,
     #[serde(rename = "service")]
     pub services: Vec<Service>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct LoadConfig {
+    #[serde(default = "default_load_threshold")]
+    pub threshold: f64,
+    #[serde(default = "default_load_interval")]
+    pub interval: u64,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -144,6 +154,14 @@ fn default_ntp_port() -> u16 {
 
 fn default_max_stratum() -> u8 {
     1
+}
+
+fn default_load_threshold() -> f64 {
+    10.0
+}
+
+fn default_load_interval() -> u64 {
+    5
 }
 
 fn default_record_type() -> String {

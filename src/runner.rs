@@ -1,3 +1,6 @@
+use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
+
 use jiff::Timestamp;
 use tracing::{error, info, warn};
 
@@ -11,7 +14,7 @@ enum State {
     Unhealthy,
 }
 
-pub async fn run_service(service: &Service, defaults: &Defaults) {
+pub async fn run_service(service: &Service, defaults: &Defaults, overloaded: Arc<AtomicBool>) {
     let interval = std::time::Duration::from_secs(service.check_interval(defaults));
     let rise = service.rise(defaults);
     let fall = service.fall(defaults);
@@ -64,9 +67,20 @@ pub async fn run_service(service: &Service, defaults: &Defaults) {
             }
         };
 
+        let healthy = healthy && !overloaded.load(Ordering::Relaxed);
+
         if healthy {
             consecutive_fail = 0;
             consecutive_ok = consecutive_ok.saturating_add(1);
+
+            if state == State::Unhealthy && consecutive_ok < rise {
+                info!(
+                    service = %service.name,
+                    consecutive_ok,
+                    rise,
+                    "rising"
+                );
+            }
 
             if state == State::Unhealthy && consecutive_ok >= rise {
                 info!(
@@ -89,6 +103,15 @@ pub async fn run_service(service: &Service, defaults: &Defaults) {
         } else {
             consecutive_ok = 0;
             consecutive_fail = consecutive_fail.saturating_add(1);
+
+            if state == State::Healthy && consecutive_fail < fall {
+                warn!(
+                    service = %service.name,
+                    consecutive_fail,
+                    fall,
+                    "falling"
+                );
+            }
 
             if state == State::Healthy && consecutive_fail >= fall {
                 warn!(
